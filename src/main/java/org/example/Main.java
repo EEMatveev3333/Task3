@@ -1,19 +1,110 @@
 package org.example;
 
+//import java.util.*;
+//import jdk.internal.reflect.ReflectionFactory;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+import java.lang.*;
+//import java.util.Queue;
+//import java.lang.reflect.InvocationTargetException;
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) {
+
+
+    public static void main(String[] args)  throws InvocationTargetException, IllegalAccessException,
+            NoSuchMethodException, InstantiationException  {
         // Press Alt+Enter with your caret at the highlighted text to see how
         // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+/*        // This method does not copy the returned Method object!
+        private static Method searchMethods(Method[] methods,
+                String name,
+                Class<?>[] parameterTypes)
+        {
+            ReflectionFactory fact = getReflectionFactory();
+            Method res = null;
+            for (Method m : methods) {
+                if (m.getName().equals(name)
+                        && arrayContentsEq(parameterTypes,
+                        fact.getExecutableSharedParameterTypes(m))
+                        && (res == null
+                        || (res.getReturnType() != m.getReturnType()
+                        && res.getReturnType().isAssignableFrom(m.getReturnType()))))
+                    res = m;
+            }
+            return res;
+        }*/
+/*        System.out.println("Лог выполнения");
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+        Fraction fr = new Fraction(2,3);*/
+/*        System.out.println("Лог выполнения");
+        System.out.println(Arrays.toString(Fraction.class.getDeclaredFields()));
+        //System.out.println(Fraction.class.getField("num"));
+        //System.out.println(Fraction.class.getField("denum"));
+        for (Field f : Fraction.class.getDeclaredFields()) System.out.println(f.getName());
+        for (Field f : Fraction.class.getDeclaredFields()) System.out.println(f.getName());*/
+/*        System.out.println(Arrays.toString(Fraction.class.getMethods()));
+        System.out.println(Arrays.toString(Fraction.class.getDeclaredMethods()));
+        for (Method m : Fraction.class.getDeclaredMethods()){
+            System.out.println(m.getName());
+            System.out.println(m.toString());
+
+            if (m.isAnnotationPresent(Cache.class))
+                System.out.println("Аннотация Cache найдена");
+            else
+                System.out.println("Аннотация Cache не найдена");
+
+            if (m.isAnnotationPresent(Mutator.class))
+                System.out.println("Аннотация Mutator найдена");
+            else
+                System.out.println("Аннотация Mutator не найдена");
+        }*/
+/*        Method meth1 = Fraction.class.getDeclaredMethod("doubleValue");
+        Method meth2 = Fraction.class.getDeclaredMethod("setDenum");
+        Method meth3 = Fraction.class.getDeclaredMethod("setNum");*/
+
+
+
+
+        //--- Тестовый пример
+/*        FractionCache frC= new FractionCache(fr);
+
+        Fractionable num1 = frC;
+        System.out.println("===!");
+        System.out.println("            " + String.valueOf(num1.doubleValue()));// sout сработал
+        System.out.println("            " + String.valueOf(num1.doubleValue()));// sout молчит
+        System.out.println("            " + String.valueOf(num1.doubleValue()));// sout молчит
+        num1.setNum(5);
+        System.out.println("            " + String.valueOf(num1.doubleValue()));// sout сработал
+        System.out.println("            " + String.valueOf(num1.doubleValue()));// sout молчит*/
+        //--- Тестовый пример
+        //Class clazz = Fraction.class;
+        //
+
+
+        System.out.println("Лог выполнения");
+
+        Fraction fr = new Fraction(2,3);
+
+        System.out.println("===!");
+        Fractionable num = Utils.cache(fr);
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+        num.setNum(5);
+        num.setDenum(15);
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+        num.setNum(50);
+        num.setDenum(150);
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+
+        System.out.println("===!");
+
+
     }
 }
