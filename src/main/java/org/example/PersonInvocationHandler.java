@@ -62,8 +62,17 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
     // Размещение в структуре данных для многопоточного окружения
     public Timestamp timestamp;// = new Timestamp(System.currentTimeMillis()) + KillIntervslMillis;
     // Размещение в структуре данных для многопоточного окружения
-    public boolean ExistsTempMapInCacheMap(ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap ObjectsMutatorCacheTmp)
-        {return false;};
+    public boolean ExistsTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
+    {return false;};
+
+    public void PutTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
+    {};
+
+    public Object GetTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
+    {
+        Object tmpObj = new Object();
+        return false;
+    };
 
     // +++ Текущий срез значений мутаторов - до кэширования
     public ConcurrentHashMap<String, Object> ObjectsMutator = new ConcurrentHashMap<>();
@@ -109,17 +118,17 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
 
         if (method.isAnnotationPresent(Cache.class))
         {
+
+            // Перед обрабокой чистим неактуальные записи принудительно
+            godHashMap.entrySet().removeIf(entry -> entry.getKey().before(new Timestamp(System.currentTimeMillis())));
+
             //System.out.println("Найдена аннотация Cache в методе " + method.getName());// + " параметры" + args.toString());
             //passportsAndNames.put(212133, "Лидия Аркадьевна Бубликова");
             //if (isChanged)
 
             // Поправить ошибку - дополнить мапу поиска именем метода cache
-            // Поправить ошибку - дополнить мапу поиска именем метода cache
-            // Поправить ошибку - дополнить мапу поиска именем метода cache
-            // Поправить ошибку - дополнить мапу поиска именем метода cache
-            // Поправить ошибку - дополнить мапу поиска именем метода cache
 
-            if (!ExistsTempMapInCacheMap(ObjectsMutator,ObjectsCache))
+            if (!ExistsTempMapInCacheMap(godHashMap,ObjectsMutator,ObjectsCache,method.getName()))
                 ObjectsCache.put(method.getName(), method.invoke(this.uniObj, args)); //tmp = method.invoke(this.uniObj, args);
             //Теперь не нужен, смотрим по наличию актуального среза в кэш по именам мутаторов и именам текущего вызова кэша
             //isChanged = false;
