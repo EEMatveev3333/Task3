@@ -18,8 +18,8 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
             {
                 try
                 {
-                    //    for
-                    System.out.println("Выполнен поток KillerThread" + getName());
+                    godHashMap.entrySet().removeIf(entry -> entry.getKey().before(new Timestamp(System.currentTimeMillis())));
+//                    System.out.println("Выполнен поток KillerThread" + getName());
                     this.sleep(1000);
                 }
                 catch (InterruptedException e)
@@ -44,9 +44,9 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
 
     protected void finalize() throws Throwable {
         // код очистки
-        System.out.println("Завершение потока KillerThread" + KillerThread.getName());
+        //System.out.println("Завершение потока KillerThread" + KillerThread.getName());
         KillerThread.interrupt();
-        System.out.println("Завершен поток KillerThread" + KillerThread.getName());
+        //System.out.println("Завершен поток KillerThread" + KillerThread.getName());
     }
 
     // Универсальный объект
@@ -73,9 +73,9 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
     public PersonInvocationHandler(T t) {
         this.uniObj = t;
         //Запускаем поток автоматического удаления
-        System.out.println("Запуск потока KillerThread" + KillerThread.getName());
+        //System.out.println("Запуск потока KillerThread" + KillerThread.getName());
         KillerThread.start();
-        System.out.println("Запущен поток KillerThread" + KillerThread.getName());
+        //System.out.println("Запущен поток KillerThread" + KillerThread.getName());
     }
 
     @Override
@@ -109,7 +109,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
 
         if (method.isAnnotationPresent(Cache.class))
         {
-            System.out.println("Найдена аннотация Cache в методе " + method.getName());// + " параметры" + args.toString());
+            //System.out.println("Найдена аннотация Cache в методе " + method.getName());// + " параметры" + args.toString());
             //passportsAndNames.put(212133, "Лидия Аркадьевна Бубликова");
             //if (isChanged)
 
@@ -130,7 +130,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
         }
         else if (method.isAnnotationPresent(Mutator.class))
         {
-            System.out.println("Найдена аннотация Mutator в методе " + method.getName() + " параметры" + Arrays.toString(args));
+            //System.out.println("Найдена аннотация Mutator в методе " + method.getName() + " параметры" + Arrays.toString(args));
             Object tmpObj = method.invoke(this.uniObj, args);
             //Теперь не нужен, смотрим по наличию актуального среза в кэш
             //isChanged = true;
