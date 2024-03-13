@@ -53,7 +53,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
     private T uniObj;
 
     // Рабочая структура КЭША
-    public ConcurrentHashMap<Timestamp, ConcurrentHashMap> godHashMap = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<Timestamp, ConcurrentHashMap<String, Object>> godHashMap = new ConcurrentHashMap<>();
 
     // Размещение в структуре данных для многопоточного окружения
     public ConcurrentHashMap<String, Object> ObjectsCache = new ConcurrentHashMap<>();
@@ -65,13 +65,18 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
     public boolean ExistsTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
     {return false;};
 
-    public void PutTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
-    {};
+    public void PutTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache, int lifeTimeMillisec)
+    {
+        ConcurrentHashMap<String, Object> tmpConcurrentHashMap = new ConcurrentHashMap<>(objectsMutatorTmp);
+        tmpConcurrentHashMap.put(methodNameCache,objectsCacheTmp.get(methodNameCache));
+        godHashMap.put(new Timestamp(System.currentTimeMillis() + lifeTimeMillisec/1000L),tmpConcurrentHashMap);
+    };
 
     public Object GetTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
     {
-        Object tmpObj = new Object();
-        return false;
+        double dbl1 = 3.333;
+        Object tmpObj = dbl1;
+        return tmpObj;
     };
 
     // +++ Текущий срез значений мутаторов - до кэширования
@@ -119,6 +124,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
         if (method.isAnnotationPresent(Cache.class))
         {
 
+
             // Перед обрабокой чистим неактуальные записи принудительно
             godHashMap.entrySet().removeIf(entry -> entry.getKey().before(new Timestamp(System.currentTimeMillis())));
 
@@ -128,14 +134,19 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
 
             // Поправить ошибку - дополнить мапу поиска именем метода cache
 
-            if (!ExistsTempMapInCacheMap(godHashMap,ObjectsMutator,ObjectsCache,method.getName()))
+            if (!ExistsTempMapInCacheMap(godHashMap,ObjectsMutator,ObjectsCache,method.getName())) {
                 ObjectsCache.put(method.getName(), method.invoke(this.uniObj, args)); //tmp = method.invoke(this.uniObj, args);
-            //Теперь не нужен, смотрим по наличию актуального среза в кэш по именам мутаторов и именам текущего вызова кэша
+                PutTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName(),method.getAnnotation(Cache.class).value());
+            }
+                //Теперь не нужен, смотрим по наличию актуального среза в кэш по именам мутаторов и именам текущего вызова кэша
             //isChanged = false;
             System.out.println("Найдена аннотация Cache в методе " + method.getName() + " результат работы method.invoke " + ObjectsCache.get(method.getName()));// + " параметры" + args.toString());
             System.out.println("Актуальный набор значений мутаторов - " + ObjectsMutator.toString());
 
-            return ObjectsCache.get(method.getName());
+
+
+            //return ObjectsCache.get(method.getName());
+            return GetTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName());
         }
         else if (method.isAnnotationPresent(Mutator.class))
         {
