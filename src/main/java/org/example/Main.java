@@ -84,27 +84,38 @@ public class Main {
         //Class clazz = Fraction.class;
         //
 
+        try {
+            System.out.println("Лог выполнения");
 
-        System.out.println("Лог выполнения");
+            Fraction fr = new Fraction(2, 3);
 
-        Fraction fr = new Fraction(2,3);
-
-        System.out.println("===!");
-        Fractionable num = Utils.cache(fr);
-        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
-        System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
-        num.setNum(5);
-        num.setDenum(15);
-        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
-        num.setNum(50);
-        num.setDenum(150);
-        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
-
-        System.out.println("===!");
-
+            System.out.println("===!");
+            Fractionable num = Utils.cache(fr);
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+            num.setNum(5);
+            num.setDenum(15);
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+            Thread.currentThread().sleep(2000);
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+            num.setNum(50);
+            num.setDenum(150);
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+            Thread.currentThread().sleep(2000);
+            System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+            //num = null;
+            Utils.referPersonInvocationHandler.KillerThread.interrupt();
+            System.gc();
+            System.out.println("===!");
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+//            Thread.interrupt();
+        }
 
     }
 }

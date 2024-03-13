@@ -4,31 +4,78 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.*;
+import java.util.concurrent.*;
+import java.sql.Timestamp;
 
 public class PersonInvocationHandler<T>implements InvocationHandler {
     //private Person person;
-    public class MyFirstThread extends Thread {
+    public class LifeTimeKillerThread extends Thread {
 
         @Override
-        public void run() {
-            System.out.println("Выполнен поток " + getName());
+        public void run(){
+
+            while (!this.interrupted())
+            {
+                try
+                {
+                    //    for
+                    System.out.println("Выполнен поток KillerThread" + getName());
+                    this.sleep(1000);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                    this.interrupt();
+                }
+                //System.out.println("Producer");
+            }
+
+//            while (true == true)
+//            {
+//
+//                //this.sleep(10); // Ставим небольшую задержку
+//            }
         }
     }
 
-    MyFirstThread ControlThread = new MyFirstThread();
+    LifeTimeKillerThread KillerThread = new LifeTimeKillerThread();
     // Маркер изменений, устанавливается в true Mutable методами, сбрасывается в false Cache методами, по усолчанию для пересчета = true
-    boolean isChanged = true;
+    //boolean isChanged = true;
+
+    protected void finalize() throws Throwable {
+        // код очистки
+        System.out.println("Завершение потока KillerThread" + KillerThread.getName());
+        KillerThread.interrupt();
+        System.out.println("Завершен поток KillerThread" + KillerThread.getName());
+    }
 
     // Универсальный объект
     private T uniObj;
 
-    //Objects tmp;
-    public HashMap<String, Object> ObjectsCache = new HashMap<>();
+    // Рабочая структура КЭША
+    public ConcurrentHashMap<Timestamp, ConcurrentHashMap> godHashMap = new ConcurrentHashMap<>();
 
-    public HashMap<String, Object> ObjectsMutator = new HashMap<>();
+    // Размещение в структуре данных для многопоточного окружения
+    public ConcurrentHashMap<String, Object> ObjectsCache = new ConcurrentHashMap<>();
+    // Размещение в структуре данных для многопоточного окружения
+    public ConcurrentHashMap<String, Object> ObjectsMutatorCache = new ConcurrentHashMap<>();
+    // Размещение в структуре данных для многопоточного окружения
+    public Timestamp timestamp;// = new Timestamp(System.currentTimeMillis()) + KillIntervslMillis;
+    // Размещение в структуре данных для многопоточного окружения
+    public boolean ExistsTempMapInCacheMap(ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap ObjectsMutatorCacheTmp)
+        {return false;};
+
+    // +++ Текущий срез значений мутаторов - до кэширования
+    public ConcurrentHashMap<String, Object> ObjectsMutator = new ConcurrentHashMap<>();
+    // Рабочая структура КЭША
+
     // Конструктор
     public PersonInvocationHandler(T t) {
         this.uniObj = t;
+        //Запускаем поток автоматического удаления
+        System.out.println("Запуск потока KillerThread" + KillerThread.getName());
+        KillerThread.start();
+        System.out.println("Запущен поток KillerThread" + KillerThread.getName());
     }
 
     @Override
@@ -59,13 +106,23 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
             return tmp;
         };*/
 
+
         if (method.isAnnotationPresent(Cache.class))
         {
             System.out.println("Найдена аннотация Cache в методе " + method.getName());// + " параметры" + args.toString());
             //passportsAndNames.put(212133, "Лидия Аркадьевна Бубликова");
-            if (isChanged)
+            //if (isChanged)
+
+            // Поправить ошибку - дополнить мапу поиска именем метода cache
+            // Поправить ошибку - дополнить мапу поиска именем метода cache
+            // Поправить ошибку - дополнить мапу поиска именем метода cache
+            // Поправить ошибку - дополнить мапу поиска именем метода cache
+            // Поправить ошибку - дополнить мапу поиска именем метода cache
+
+            if (!ExistsTempMapInCacheMap(ObjectsMutator,ObjectsCache))
                 ObjectsCache.put(method.getName(), method.invoke(this.uniObj, args)); //tmp = method.invoke(this.uniObj, args);
-            isChanged = false;
+            //Теперь не нужен, смотрим по наличию актуального среза в кэш по именам мутаторов и именам текущего вызова кэша
+            //isChanged = false;
             System.out.println("Найдена аннотация Cache в методе " + method.getName() + " результат работы method.invoke " + ObjectsCache.get(method.getName()));// + " параметры" + args.toString());
             System.out.println("Актуальный набор значений мутаторов - " + ObjectsMutator.toString());
 
@@ -75,7 +132,8 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
         {
             System.out.println("Найдена аннотация Mutator в методе " + method.getName() + " параметры" + Arrays.toString(args));
             Object tmpObj = method.invoke(this.uniObj, args);
-            isChanged = true;
+            //Теперь не нужен, смотрим по наличию актуального среза в кэш
+            //isChanged = true;
             System.out.println("Найдена аннотация Mutator в методе " + method.getName() + " параметры" + Arrays.toString(args) + " результат работы method.invoke " + ObjectsCache.get(method.getName()));
             ObjectsMutator.put(method.getName(),Arrays.toString(args));
             return tmpObj;
