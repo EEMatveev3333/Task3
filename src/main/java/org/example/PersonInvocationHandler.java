@@ -63,7 +63,9 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
     public Timestamp timestamp;// = new Timestamp(System.currentTimeMillis()) + KillIntervslMillis;
     // Размещение в структуре данных для многопоточного окружения
     public boolean ExistsTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
-    {return false;};
+    {
+        return false;
+    };
 
     public void PutTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache, int lifeTimeMillisec)
     {
