@@ -62,15 +62,21 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
     // Размещение в структуре данных для многопоточного окружения
     public Timestamp timestamp;// = new Timestamp(System.currentTimeMillis()) + KillIntervslMillis;
     // Размещение в структуре данных для многопоточного окружения
-    public boolean ExistsTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
+    public boolean ExistsTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, String methodNameCache)
     {
         //return false;
-        for (ConcurrentHashMap<Timestamp, ConcurrentHashMap<String, Object>> entry : godHashMap.entrySet()) {
-            ConcurrentHashMap<String, Object> value = entry.getValue();
-            Timestamp key = entry.getKey();
-            System.out.println("Key: " + key + ", Value: " + value);
-        }
-        return false;
+//        for (ConcurrentHashMap<Timestamp, ConcurrentHashMap<String, Object>> entry : godHashMap.entrySet()) {
+//            ConcurrentHashMap<String, Object> value = entry.getValue();
+//            Timestamp key = entry.getKey();
+//            System.out.println("Key: " + key + ", Value: " + value);
+//        }
+        Object tmpObj =
+                GetTempMapInCacheMap(godHashMap, objectsMutatorTmp, methodNameCache);
+        if (GetTempMapInCacheMap(godHashMap, objectsMutatorTmp, methodNameCache) == null)
+            return false;
+        else
+            return true;
+
     };
 
     public void PutTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache, int lifeTimeMillisec)
@@ -80,7 +86,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
         godHashMap.put(new Timestamp(System.currentTimeMillis() + lifeTimeMillisec/1000L),tmpConcurrentHashMap);
     };
 
-    public Object GetTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
+    public Object GetTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, String methodNameCache)
     {
         double dbl1 = 3.333;
         Object tmpObj = dbl1;
@@ -142,7 +148,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
 
             // Поправить ошибку - дополнить мапу поиска именем метода cache
 
-            if (!ExistsTempMapInCacheMap(godHashMap,ObjectsMutator,ObjectsCache,method.getName())) {
+            if (!ExistsTempMapInCacheMap(godHashMap,ObjectsMutator,method.getName())) {
                 ObjectsCache.put(method.getName(), method.invoke(this.uniObj, args)); //tmp = method.invoke(this.uniObj, args);
                 PutTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName(),method.getAnnotation(Cache.class).value());
             }
@@ -154,7 +160,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
 
 
             //return ObjectsCache.get(method.getName());
-            return GetTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName());
+            return GetTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName());
         }
         else if (method.isAnnotationPresent(Mutator.class))
         {
