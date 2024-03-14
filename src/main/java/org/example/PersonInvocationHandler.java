@@ -64,6 +64,12 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
     // Размещение в структуре данных для многопоточного окружения
     public boolean ExistsTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache)
     {
+        //return false;
+        for (ConcurrentHashMap<Timestamp, ConcurrentHashMap<String, Object>> entry : godHashMap.entrySet()) {
+            ConcurrentHashMap<String, Object> value = entry.getValue();
+            Timestamp key = entry.getKey();
+            System.out.println("Key: " + key + ", Value: " + value);
+        }
         return false;
     };
 
