@@ -99,7 +99,7 @@ public class Main {
 //1 тест - перевызов invoke после протухания кэша
             System.out.println("            sleep(2000), мутаторы не меняем, сразу повторный вызов, кэш протух");// sout молчит
             System.out.println("            РЕЗУЛЬТАТ num.doubleValue():" + String.valueOf(num.doubleValue()));// sout молчит
-            System.out.println("            мутаторы меняем setNum(5) setDenum(15)");// sout молчит
+            System.out.println("мутаторы меняем setNum(5) setDenum(15)");// sout молчит
             num.setNum(5);
             num.setDenum(15);
             System.out.println("===!" + fr.toString());
