@@ -34,5 +34,13 @@ public class Fraction implements Fractionable{
         System.out.println("invoke double value");
         return (double) num/denum;
     }
+
+    @Override
+    public String toString() {
+        return "Fraction{" +
+                "num=" + num +
+                ", denum=" + denum +
+                '}';
+    }
 }
 

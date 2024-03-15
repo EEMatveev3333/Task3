@@ -107,11 +107,15 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
                     ConcurrentHashMap.Entry<String, Object> entry = iteratorCur.next();
                     String key = entry.getKey();
                     Object value = entry.getValue();
-                    //Object object =
-                    if (objectsMutatorTmp.containsKey(key))
-                        if (objectsMutatorTmp.get(key).equals(value))
-                            continue;
 
+                    //Object object =
+                    if (objectsMutatorTmp.containsKey(key)) {
+                        System.out.println("            Compare obj value1 " + String.valueOf(value) + " value2 " + String.valueOf(objectsMutatorTmp.get(key)));// sout сработал
+                        if (objectsMutatorTmp.get(key).equals(value)) {
+                            System.out.println("            Значения эквивалентны");
+                            continue;
+                        }
+                    }
                     isExistAllMutators = false;
                     //ConcurrentHashMap<String, Object> curMapentry = entry.getValue();
                     //tmpObj = GetCacheMaps(curMapentry, objectsMutatorTmp, methodNameCache);
@@ -125,10 +129,14 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
 //                    if (!godHashMapOneInst.containsKey(objectsMutatorTmpInst.))
 //                        return null;
 //                }
-                if (isExistAllMutators = true)
+                if (isExistAllMutators = true) {
+                    System.out.println("            Значение в кэше найдено " + String.valueOf(godHashMapOneInst.get(methodNameCache)));
                     return godHashMapOneInst.get(methodNameCache);
-                else
+                }
+                else {
+                    System.out.println("            Значение в кэше не найдено " );
                     return null;
+                }
             }
 //        return false;
     return null;
@@ -217,6 +225,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
             // Поправить ошибку - дополнить мапу поиска именем метода cache
 
             if (!ExistsTempMapInCacheMap(godHashMap,ObjectsMutator,method.getName())) {
+                System.out.println("Значение в Cache не найдено");
                 ObjectsCache.put(method.getName(), method.invoke(this.uniObj, args)); //tmp = method.invoke(this.uniObj, args);
                 PutTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName(),method.getAnnotation(Cache.class).value());
             }
