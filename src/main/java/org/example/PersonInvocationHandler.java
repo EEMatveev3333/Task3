@@ -86,10 +86,56 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
         godHashMap.put(new Timestamp(System.currentTimeMillis() + lifeTimeMillisec/1000L),tmpConcurrentHashMap);
     };
 
+//    public boolean CompareCacheMaps(ConcurrentHashMap godHashMapOneInst, ConcurrentHashMap objectsMutatorTmp, String methodNameCache){
+//        if (godHashMapOneInst.size() == objectsMutatorTmp.size() + 1)
+//            if (godHashMapOneInst.containsKey(methodNameCache)){
+//                boolean isExist = false;
+////                for (ConcurrentHashMap objectsMutatorTmpInst : objectsMutatorTmp){
+////                    if (godHashMapOneInst.containsKey(objectsMutatorTmpInst.))
+////                    if (godHashMapOneInst.get())
+////                }
+//            }
+//        return false;
+//    }
+
+    public Object GetCacheMaps(ConcurrentHashMap godHashMapOneInst, ConcurrentHashMap objectsMutatorTmp, String methodNameCache){
+        if (godHashMapOneInst.size() == objectsMutatorTmp.size() + 1)
+            if (godHashMapOneInst.containsKey(methodNameCache)){
+                boolean isExistAllMutators = false;
+                for (ConcurrentHashMap objectsMutatorTmpInst : objectsMutatorTmp){
+                    if (!godHashMapOneInst.containsKey(objectsMutatorTmpInst.))
+                        return null;
+                }
+                return godHashMapOneInst.get(methodNameCache);
+            }
+//        return false;
+    return null;
+    }
+
     public Object GetTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, String methodNameCache)
     {
         double dbl1 = 3.333;
-        Object tmpObj = dbl1;
+        Object tmpObj = dbl1;//null;
+        //Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
+        Iterator<Map.Entry<Timestamp, ConcurrentHashMap<String, Object>>> iterator = godHashMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Timestamp, ConcurrentHashMap<String, Object>> entry = iterator.next();
+            Timestamp key = entry.getKey();
+            ConcurrentHashMap<String, Object> curMapentry = entry.getValue();
+            tmpObj = GetCacheMaps(curMapentry, objectsMutatorTmp, methodNameCache);
+            if (tmpObj == null)
+                continue;
+            else
+                return tmpObj;
+            //System.out.println("Key: " + key + ", Value: " + value);
+        }
+//        for (ConcurrentHashMap<Timestamp, ConcurrentHashMap<String, Object>> curMapentry : godHashMap.entrySet()){
+//            tmpObj = GetCacheMaps(curMapentry, objectsMutatorTmp, methodNameCache);
+//            if (tmpObj == null)
+//                continue;
+//            else
+//                return tmpObj;
+//        }
         return tmpObj;
     };
 
