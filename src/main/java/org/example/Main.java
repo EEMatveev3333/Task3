@@ -94,17 +94,21 @@ public class Main {
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+            System.out.println("мутаторы меняем setNum(5) setDenum(15)");// sout молчит
             num.setNum(5);
             num.setDenum(15);
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
             Thread.currentThread().sleep(2000);
+            System.out.println("sleep(2000), мутаторы не меняем, сразу повторный вызов, кэш протух");// sout молчит
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
+            System.out.println("мутаторы меняем setNum(50) setDenum(250)");// sout молчит
             num.setNum(50);
-            num.setDenum(150);
+            num.setDenum(250);
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
             Thread.currentThread().sleep(2000);
+            System.out.println("sleep(2000), мутаторы не меняем, сразу повторный вызов, кэш протух");// sout молчит
             System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
             //num = null;
             Utils.referPersonInvocationHandler.KillerThread.interrupt();
