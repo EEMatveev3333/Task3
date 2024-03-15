@@ -94,6 +94,7 @@ public class Main {
             System.out.println("            РЕЗУЛЬТАТ num.doubleValue():" + String.valueOf(num.doubleValue()));// sout сработал
 //0 тест - корректный расчет без кэша
             System.out.println("            РЕЗУЛЬТАТ num.doubleValue():" + String.valueOf(num.doubleValue()));// sout молчит
+//0 тест - корректный расчет из кэша
             Thread.currentThread().sleep(2000);
 //1 тест - перевызов invoke после протухания кэша
             System.out.println("            sleep(2000), мутаторы не меняем, сразу повторный вызов, кэш протух");// sout молчит
