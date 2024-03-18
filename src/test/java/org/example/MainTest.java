@@ -53,6 +53,7 @@ class MainTest {
         assertNotEquals(String.valueOf(num.doubleValue()), String.valueOf(5.0/16.0));
         assertNotEquals(String.valueOf(num.doubleValue()), String.valueOf(100.0/100.0));
 
+
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
         System.out.println("===!");
