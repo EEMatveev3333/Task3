@@ -225,7 +225,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
             // Поправить ошибку - дополнить мапу поиска именем метода cache
 
             if (!ExistsTempMapInCacheMap(godHashMap,ObjectsMutator,method.getName())) {
-//                System.out.println("Значение в Cache не найдено");
+                System.out.println("Значение в Cache не найдено");
                 ObjectsCache.put(method.getName(), method.invoke(this.uniObj, args)); //tmp = method.invoke(this.uniObj, args);
                 PutTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName(),method.getAnnotation(Cache.class).value());
             }
@@ -241,7 +241,7 @@ public class PersonInvocationHandler<T>implements InvocationHandler {
         }
         else if (method.isAnnotationPresent(Mutator.class))
         {
-            //System.out.println("Найдена аннотация Mutator в методе " + method.getName() + " параметры" + Arrays.toString(args));
+            System.out.println("Найдена аннотация Mutator в методе " + method.getName() + " параметры" + Arrays.toString(args));
             Object tmpObj = method.invoke(this.uniObj, args);
             //Теперь не нужен, смотрим по наличию актуального среза в кэш
             //isChanged = true;

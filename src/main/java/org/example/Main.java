@@ -108,6 +108,9 @@ public class Main {
             Thread.currentThread().sleep(2000);
             System.out.println("sleep(2000), мутаторы не меняем, сразу повторный вызов, кэш протух");// sout молчит
             System.out.println("            РЕЗУЛЬТАТ num.doubleValue():" + String.valueOf(num.doubleValue()));// sout молчит
+
+
+            System.out.println("==========================!");// + fr.toString());
             System.out.println("мутаторы меняем setNum(50) setDenum(250)");// sout молчит
             num.setNum(50);
             num.setDenum(250);
