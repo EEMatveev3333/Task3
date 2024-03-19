@@ -18,7 +18,7 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
                     godHashMap.entrySet().removeIf(entry -> entry.getKey().before(new Timestamp(System.currentTimeMillis())));
                     this.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     this.interrupt();
                 }
             }
@@ -27,9 +27,9 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
 
     LifeTimeKillerThread KillerThread = new LifeTimeKillerThread();
 
-    protected void finalize() throws Throwable {
-        KillerThread.interrupt();
-    }
+//    protected void finalize() throws Throwable {
+//        KillerThread.interrupt();
+//    }
 
     private T uniObj;
     public ConcurrentHashMap<Timestamp, ConcurrentHashMap<String, Object>> godHashMap = new ConcurrentHashMap<>();
