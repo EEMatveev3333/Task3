@@ -110,21 +110,28 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.isAnnotationPresent(Cache.class)) {
+
+        Method tmpMethod = uniObj.getClass().getMethod(method.getName(), method.getParameterTypes());
+        System.out.println("tmpMethod " + tmpMethod.getName() + Arrays.toString(tmpMethod.getAnnotations()));
+        System.out.println("tmpMethod.isAnnotationPresent(Cache.class) " + tmpMethod.isAnnotationPresent(Cache.class));
+        System.out.println("tmpMethod.isAnnotationPresent(Mutator.class) " + tmpMethod.isAnnotationPresent(Mutator.class));
+
+        if (tmpMethod.isAnnotationPresent(Cache.class)) {
             godHashMap.entrySet().removeIf(entry -> entry.getKey().before(new Timestamp(System.currentTimeMillis())));
 
             if (!ExistsTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName())) {
                 System.out.println("Значение в Cache не найдено");
                 ObjectsCache.put(method.getName(), method.invoke(this.uniObj, args));
-                PutTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName(), method.getAnnotation(Cache.class).value());
+                PutTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName(), tmpMethod.getAnnotation(Cache.class).value());
             }
             return GetTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName());
-        } else if (method.isAnnotationPresent(Mutator.class)) {
+        } else if (tmpMethod.isAnnotationPresent(Mutator.class)) {
             System.out.println("Найдена аннотация Mutator в методе " + method.getName() + " параметры" + Arrays.toString(args));
             Object tmpObj = method.invoke(this.uniObj, args);
             ObjectsMutator.put(method.getName(), Arrays.toString(args));
             return tmpObj;
         } else {
+            System.out.println("Стандартная обработка !Cache !Mutator");
             return method.invoke(this.uniObj, args);
         }
     }

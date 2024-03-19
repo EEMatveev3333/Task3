@@ -15,18 +15,18 @@ public class Fraction implements Fractionable {
         this.denum = denum;
     }
 
-    @Mutator()
+    //    @Mutator()
     public void setNum(int num) {
         this.num = num;
     }
 
-    @Mutator()
+    //    @Mutator()
     public void setDenum(int denum) {
         this.denum = denum;
     }
 
     @Override
-    @Cache(1000)
+//    @Cache(1000)
     public double doubleValue() {
         System.out.println("invoke double value");
         return (double) num / denum;

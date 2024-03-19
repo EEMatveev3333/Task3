@@ -1,10 +1,12 @@
 package org.example;
 
-public interface Fractionable{
-    @Cache(1000)
+public interface Fractionable {
+    //@Cache(1000)
     double doubleValue();
-    @Mutator()
+
+    //@Mutator()
     void setNum(int num);
-    @Mutator()
+
+    //@Mutator()
     void setDenum(int denum);
 }
