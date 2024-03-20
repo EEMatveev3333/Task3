@@ -30,21 +30,53 @@ class MainTest {
         System.out.println("===!");
         Fractionable num = Utils.cache(fr);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
 
         num.setNum(5);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
 
         num.setDenum(15);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
 
         num.setNum(20);
         num.setDenum(40);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
 
+        System.out.println("===!");
+    }
+
+    @org.junit.jupiter.api.Test
+    @DisplayName("Тест 5. Проверить очистку кэша по времени")
+    void testUncachedValueClean() {
+        Fraction fr = new Fraction(2, 3);
+        System.out.println("===!");
+        Fractionable num = Utils.cache(fr);
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+
+        num.setNum(5);
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+
+        num.setDenum(15);
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+
+        num.setNum(20);
+        num.setDenum(40);
+        System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
+        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+
+        // Задержка, все значениея в кэше должны быть очищены
+        try {
+            Thread.currentThread().sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
         System.out.println("===!");
     }
 
@@ -87,11 +119,15 @@ class MainTest {
         Utils.referPersonInvocationHandler.ObjectsCache.put("doubleValue", (Object) test_val);
         assertNotEquals(String.valueOf(num.doubleValue()), String.valueOf(test_val));
         // Задержка, все значениея в кэше должны быть очищены
+        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+        System.out.println("===!");
         try {
             Thread.currentThread().sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+        System.out.println("===!");
 
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
         num.setNum(5);
