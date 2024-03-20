@@ -93,6 +93,24 @@ class MainTest {
         double test_val = 0.25;
         //Utils.referPersonInvocationHandler.ObjectsCache.put("doubleValue", (Object) test_val);
         //Utils.referPersonInvocationHandler.godHashMap.entrySet().stream().distinct()
+        System.out.println("  XXX          " +
+                Utils.referPersonInvocationHandler.GetTempMapInCacheMap(
+                        Utils.referPersonInvocationHandler.godHashMap
+                        , Utils.referPersonInvocationHandler.ObjectsMutator
+                        , "doubleValue"
+                ));
+        Utils.referPersonInvocationHandler.tmpPutTempMapInCacheMap(
+                Utils.referPersonInvocationHandler.godHashMap
+                , Utils.referPersonInvocationHandler.ObjectsMutator
+                , "doubleValue"
+                , (Object) test_val
+        );
+        System.out.println("  XXX          " +
+                Utils.referPersonInvocationHandler.GetTempMapInCacheMap(
+                        Utils.referPersonInvocationHandler.godHashMap
+                        , Utils.referPersonInvocationHandler.ObjectsMutator
+                        , "doubleValue"
+                ));
 
         assertEquals(String.valueOf(num.doubleValue()), String.valueOf(test_val));
 

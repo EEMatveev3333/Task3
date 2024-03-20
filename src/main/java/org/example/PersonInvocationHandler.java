@@ -100,6 +100,54 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
 
     ;
 
+    //
+    public void tmpPutCacheMaps(ConcurrentHashMap godHashMapOneInst, ConcurrentHashMap objectsMutatorTmp, String methodNameCache, Object tmpObj) {
+        if (godHashMapOneInst.size() == objectsMutatorTmp.size() + 1)
+            if (godHashMapOneInst.containsKey(methodNameCache)) {
+                boolean isExistAllMutators = true;
+                Iterator<ConcurrentHashMap.Entry<String, Object>> iteratorCur = godHashMapOneInst.entrySet().iterator();
+                while (iteratorCur.hasNext()) {
+                    ConcurrentHashMap.Entry<String, Object> entry = iteratorCur.next();
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+
+                    if (objectsMutatorTmp.containsKey(key)) {
+                        if (objectsMutatorTmp.get(key).equals(value)) {
+                            continue;
+                        }
+                    }
+                    isExistAllMutators = false;
+                }
+                if (isExistAllMutators = true) {
+                    //return
+                    godHashMapOneInst.put(methodNameCache, tmpObj);
+                } else {
+//                    return null;
+                }
+            }
+//        return null;
+    }
+
+    public void tmpPutTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, String methodNameCache, Object tmpObj) {
+        // = null;
+        Iterator<ConcurrentHashMap.Entry<Timestamp, ConcurrentHashMap<String, Object>>> iterator = godHashMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            ConcurrentHashMap.Entry<Timestamp, ConcurrentHashMap<String, Object>> entry = iterator.next();
+            Timestamp key = entry.getKey();
+            ConcurrentHashMap<String, Object> curMapentry = entry.getValue();
+            //tmpObj =
+            tmpPutCacheMaps(curMapentry, objectsMutatorTmp, methodNameCache, tmpObj);
+//            if (tmpObj == null)
+//                continue;
+//            else
+//                return tmpObj;
+        }
+//        return tmpObj;
+    }
+
+    ;
+    //
+
     public ConcurrentHashMap<String, Object> ObjectsMutator = new ConcurrentHashMap<>();
 
     // Конструктор
@@ -114,6 +162,7 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
         Method tmpMethod = uniObj.getClass().getMethod(method.getName(), method.getParameterTypes());
 
         if (tmpMethod.isAnnotationPresent(Cache.class)) {
+            System.out.println("Обработка через кэш " + tmpMethod.getName());
             godHashMap.entrySet().removeIf(entry -> entry.getKey().before(new Timestamp(System.currentTimeMillis())));
 
             if (!ExistsTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName())) {
@@ -122,10 +171,12 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
             }
             return GetTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName());
         } else if (tmpMethod.isAnnotationPresent(Mutator.class)) {
+            System.out.println("Обработка через мутатор");
             Object tmpObj = method.invoke(this.uniObj, args);
             ObjectsMutator.put(method.getName(), Arrays.toString(args));
             return tmpObj;
         } else {
+            System.out.println("Обработка не через кэш и мутатор");
             return method.invoke(this.uniObj, args);
         }
     }
