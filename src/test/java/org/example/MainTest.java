@@ -80,6 +80,7 @@ class MainTest {
         System.out.println("===!");
     }
 
+
     @org.junit.jupiter.api.Test
     @DisplayName("Тест 3. Проверить чтение из кэша искуственно скорректированным кэшированное значением.")
     void testCrushedCachedValue() {
