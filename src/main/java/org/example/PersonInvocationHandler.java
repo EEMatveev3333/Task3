@@ -16,6 +16,7 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
             while (!this.interrupted()) {
                 try {
                     godHashMap.entrySet().removeIf(entry -> entry.getKey().before(new Timestamp(System.currentTimeMillis())));
+                    //??? Вернуть значение 1000
                     this.sleep(1000);
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
@@ -38,8 +39,9 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
     public Timestamp timestamp;// = new Timestamp(System.currentTimeMillis()) + KillIntervslMillis;
 
     public boolean ExistsTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, String methodNameCache) {
-        Object tmpObj =
-                GetTempMapInCacheMap(godHashMap, objectsMutatorTmp, methodNameCache);
+        //Object tmpObj =
+        //        GetTempMapInCacheMap(godHashMap, objectsMutatorTmp, methodNameCache);
+        //if (GetTempMapInCacheMap(godHashMap, objectsMutatorTmp, methodNameCache) == null)
         if (GetTempMapInCacheMap(godHashMap, objectsMutatorTmp, methodNameCache) == null)
             return false;
         else
@@ -51,7 +53,16 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
     public void PutTempMapInCacheMap(ConcurrentHashMap godHashMap, ConcurrentHashMap objectsMutatorTmp, ConcurrentHashMap objectsCacheTmp, String methodNameCache, int lifeTimeMillisec) {
         ConcurrentHashMap<String, Object> tmpConcurrentHashMap = new ConcurrentHashMap<>(objectsMutatorTmp);
         tmpConcurrentHashMap.put(methodNameCache, objectsCacheTmp.get(methodNameCache));
-        godHashMap.put(new Timestamp(System.currentTimeMillis() + lifeTimeMillisec / 1000L), tmpConcurrentHashMap);
+        try {
+            Thread.currentThread().sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(" <first key> cur       " + new Timestamp(System.currentTimeMillis()));
+        System.out.println(" <first key>           " + new Timestamp(System.currentTimeMillis() + lifeTimeMillisec));
+        System.out.println("godHashMap.size() до до " + godHashMap.size());
+        godHashMap.put(new Timestamp(System.currentTimeMillis() + lifeTimeMillisec), tmpConcurrentHashMap);
+        System.out.println("godHashMap.size() после после " + godHashMap.size());
     }
 
     ;
@@ -66,14 +77,21 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
                     String key = entry.getKey();
                     Object value = entry.getValue();
 
+                    // По мутатора
                     if (objectsMutatorTmp.containsKey(key)) {
                         if (objectsMutatorTmp.get(key).equals(value)) {
                             continue;
                         }
                     }
+                    // По кэшу
+                    if (key.equals(methodNameCache)) {
+                        //if (objectsMutatorTmp.get(key).equals(value)) {
+                        continue;
+                        //}
+                    }
                     isExistAllMutators = false;
                 }
-                if (isExistAllMutators = true) {
+                if (isExistAllMutators == true) {
                     return godHashMapOneInst.get(methodNameCache);
                 } else {
                     return null;
@@ -89,6 +107,7 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
             ConcurrentHashMap.Entry<Timestamp, ConcurrentHashMap<String, Object>> entry = iterator.next();
             Timestamp key = entry.getKey();
             ConcurrentHashMap<String, Object> curMapentry = entry.getValue();
+            System.out.println("curMapentry = " + Arrays.asList(curMapentry));
             tmpObj = GetCacheMaps(curMapentry, objectsMutatorTmp, methodNameCache);
             if (tmpObj == null)
                 continue;
@@ -163,20 +182,28 @@ public class PersonInvocationHandler<T> implements InvocationHandler {
 
         if (tmpMethod.isAnnotationPresent(Cache.class)) {
             System.out.println("Обработка через кэш " + tmpMethod.getName());
+            System.out.println("godHashMap.size() до " + godHashMap.size());
+            // ???
             godHashMap.entrySet().removeIf(entry -> entry.getKey().before(new Timestamp(System.currentTimeMillis())));
-
+            System.out.println("godHashMap.size() до(после очистки) " + godHashMap.size());
             if (!ExistsTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName())) {
                 ObjectsCache.put(method.getName(), method.invoke(this.uniObj, args));
+                System.out.println("ObjectsCache " + Arrays.asList(ObjectsCache));
                 PutTempMapInCacheMap(godHashMap, ObjectsMutator, ObjectsCache, method.getName(), tmpMethod.getAnnotation(Cache.class).value());
+                System.out.println("Обработка через кэш с задержкой " + tmpMethod.getAnnotation(Cache.class).value());
             }
+            System.out.println("godHashMap.size() после " + godHashMap.size());
+            System.out.println("ObjectsCache = " + Arrays.asList(ObjectsCache));
+            System.out.println("ObjectsMutator = " + Arrays.asList(ObjectsMutator));
+            System.out.println("GetTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName()) = " + GetTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName()));
             return GetTempMapInCacheMap(godHashMap, ObjectsMutator, method.getName());
         } else if (tmpMethod.isAnnotationPresent(Mutator.class)) {
-            System.out.println("Обработка через мутатор");
+            System.out.println("Обработка через мутатор " + method.getName() + " Arrays.toString(args) " + Arrays.toString(args));
             Object tmpObj = method.invoke(this.uniObj, args);
             ObjectsMutator.put(method.getName(), Arrays.toString(args));
             return tmpObj;
         } else {
-            System.out.println("Обработка не через кэш и мутатор");
+            System.out.println("Обработка не через кэш и мутатор " + method.getName());
             return method.invoke(this.uniObj, args);
         }
     }

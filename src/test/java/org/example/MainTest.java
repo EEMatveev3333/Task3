@@ -12,6 +12,8 @@ class MainTest {
         Fraction fr = new Fraction(2, 3);
         System.out.println("===!");
         Fractionable num = Utils.cache(fr);
+        num.setNum(2);
+        num.setDenum(3);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
         assertNotEquals(String.valueOf(num.doubleValue()), String.valueOf(4.0 / 3.0));
         num.setNum(5);
@@ -29,21 +31,23 @@ class MainTest {
         Fraction fr = new Fraction(2, 3);
         System.out.println("===!");
         Fractionable num = Utils.cache(fr);
+        num.setNum(2);
+        num.setDenum(3);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
         assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
 
         num.setNum(5);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 2);
 
         num.setDenum(15);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 3);
 
         num.setNum(20);
         num.setDenum(40);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 4);
 
         System.out.println("===!");
     }
@@ -54,21 +58,24 @@ class MainTest {
         Fraction fr = new Fraction(2, 3);
         System.out.println("===!");
         Fractionable num = Utils.cache(fr);
+        num.setNum(2);
+        num.setDenum(3);
+
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 1);
 
         num.setNum(5);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 2);
 
         num.setDenum(15);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 3);
 
         num.setNum(20);
         num.setDenum(40);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
-        assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
+        assertEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 4);
 
         // Задержка, все значениея в кэше должны быть очищены
         try {
@@ -87,6 +94,9 @@ class MainTest {
         Fraction fr = new Fraction(2, 3);
         System.out.println("===!");
         Fractionable num = Utils.cache(fr);
+        num.setNum(2);
+        num.setDenum(3);
+
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
         assertEquals(String.valueOf(num.doubleValue()), String.valueOf(2.0 / 3.0));
@@ -128,8 +138,11 @@ class MainTest {
     @DisplayName("Тест 4. Проверить очистку кэша по таймеру через чтение из кэша искуственно скорректированным кэшированное значением и последующего его удаления")
     void testCleanedCachedValue() throws InterruptedException {
         Fraction fr = new Fraction(2, 3);
+
         System.out.println("===!");
         Fractionable num = Utils.cache(fr);
+        num.setNum(2);
+        num.setDenum(3);
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout сработал
         System.out.println("            " + String.valueOf(num.doubleValue()));// sout молчит
         assertEquals(String.valueOf(num.doubleValue()), String.valueOf(2.0 / 3.0));

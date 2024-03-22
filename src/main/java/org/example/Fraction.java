@@ -11,8 +11,8 @@ public class Fraction implements Fractionable {
     private int denum;
 
     public Fraction(int num, int denum) {
-        this.num = num;
-        this.denum = denum;
+        this.setNum(num);//num = num;
+        this.setDenum(denum);//denum = denum;
     }
 
     @Mutator()
