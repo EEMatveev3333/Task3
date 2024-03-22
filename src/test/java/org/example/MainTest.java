@@ -154,7 +154,7 @@ class MainTest {
         assertNotEquals(Utils.referPersonInvocationHandler.godHashMap.size(), 0);
         System.out.println("===!");
         try {
-            Thread.currentThread().sleep(2000);
+            Thread.currentThread().sleep(4000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
